@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<body>
+<div th:include="fragment/fragment :: header-customer"></div>
+
+<section class="login_box_area section-margin">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="login_box_img">
+                    <div class="hover">
+                        <h4>New to our website?</h4>
+                        <a th:href="@{/register}"
+                        ><button class="btn btn-outline-light" style="border-radius: 20px;">Create an Account</button></a
+                        >
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="login_form_inner">
+                    <h3>Log in to enter</h3>
+                    <form class="row login_form" method="post"th:action="@{/processLogin}">
+                        <div class="col-md-12 form-group">
+                            <input
+                                    type="email"
+                                    class="form-control"
+                                    name="email"
+                                    placeholder="Email"
+                                    required
+                            />
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input
+                                    type="password"
+                                    class="form-control"
+                                    name="password"
+                                    required
+                                    placeholder="Password"
+                                    minlength="8"
+                            />
+                        </div>
+                        <!-- <div class="col-md-12 form-group">
+                            <div class="creat_account">
+                                <input type="checkbox" id="f-option2" name="selector"/>
+                                <label for="f-option2">Keep me logged in</label>
+                            </div>
+                        </div> -->
+                        <div class="col-md-12 form-group">
+                            <button
+
+                                    type="submit"
+                                    class="btn btn-primary btn-outline-light form-control" style="border-radius: 20px;"
+                            >
+                                Log In
+                            </button>
+                            <a href="#">Forgot Password?</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+<th:block th:if="${message != null}">
+    <div id="message" th:text="${message}"></div>
+    <script>
+        $("#message").hide();
+        alert($("#message").text());
+    </script>
+</th:block>
+</body>
+</html>

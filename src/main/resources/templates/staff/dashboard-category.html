@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<body>
+<div th:include="fragment/fragment :: header-staff"></div>
+
+<div class="container" style="margin-top: 40px; margin-bottom: 200px;">
+    <div class="row">
+        <div class="col-md-2 position-sticky " style="margin-top: 40px">
+            <nav
+                    id="sidebarMenu"
+                    class="collapse d-lg-block sidebar collapse bg-white"
+            >
+                <div class="position-sticky">
+                    <div class="list-group list-group-flush">
+                        <a
+                                th:href="@{/dashboard}"
+                                class="list-group-item list-group-item-action py-2 ripple"
+                        >
+                            <i class="fas fa-chart-bar"></i>&nbsp;&nbsp;<span>Dashboard</span>
+                        </a>
+                        <a
+                                th:href="@{/dashboard/customer}"
+                                class="list-group-item list-group-item-action py-2 ripple"
+                        >
+                            <i class="far fa-user"></i>&nbsp;&nbsp;<span>Customer</span>
+                        </a>
+                        <a
+                                th:href="@{/dashboard/food}"
+                                class="list-group-item list-group-item-action py-2 ripple"
+                        ><i class="fas fa-utensils"></i>&nbsp;&nbsp;<span>Food</span></a
+                        >
+                        <a
+                                th:href="@{/dashboard/order}"
+                                class="list-group-item list-group-item-action py-2 ripple"
+                        ><i class="fas fa-book"></i>&nbsp;&nbsp;<span>Order</span></a
+                        >
+                        <a
+                                th:href="@{/category}"
+                                class="list-group-item list-group-item-action py-2 ripple active"
+                        ><i class="fas fa-columns"></i>&nbsp;&nbsp;<span>Category</span></a
+                        >
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="col-md-10">
+            <main>
+                <div class="container pt-4">
+                    <section class="mb-4">
+                        <div class="card">
+                            <div class="card-header text-center py-3">
+                                <h5 class="mb-0 text-center">
+                                    <strong>Category</strong>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a class="button button-login" id="btn-add-category">
+                                            Add Category
+                                        </a></div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover text-nowrap table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Food Quantity</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="category : ${categoryList}">
+                                            <td  th:text="${category.ID}"></td>
+                                            <td>
+                                                <a th:href="@{'/dashboard/food?category=' + ${category.ID}}"
+                                                   class="link-dark">[[${category.name}]]</a>
+                                            </td>
+                                            <td  th:text="${category.foodQuantity}"></td>
+                                            <td>
+                                                <a id="btn-edit-category"  th:attr="onclick=|showEditModal('${category.ID}', '${category.name}', '${category.foodQuantity}')|"
+                                                   class="text-decoration-none text-dark">
+                                                    <i class="far fa-edit"></i>
+                                                </a> &nbsp; &nbsp;
+                                                <a th:unless="${category.ID == 1 || category.ID == 2}" th:attr="onclick=|showDeleteConfirmModal('${category.ID}')|"><i
+                                                        class="far fa-trash-alt"></i></a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!--modal add-->
+<div
+        class="modal fade"
+        id="category-modal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <form class="modal-content" th:object="${category}" method="post" th:action="@{/category/add}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">
+                    Add Category
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                       <div class="form-group" >
+                           <label>Name</label>
+                           <input type="text" name="name" th:field="*{name}" class="form-control">
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="btn-close-modal"
+                >
+                    Close
+                </button>
+                <input type="submit" class="btn btn-primary" value="Add">
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--modal edit-->
+<div
+        class="modal fade"
+        id="category-modal-edit"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <form class="modal-content" th:object="${category}" method="post" th:action="@{/category/edit}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">
+                    Edit Category
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group" >
+                            <label>Name</label>
+                            <input type="hidden" name="id">
+                            <input type="hidden" name="foodQuantity">
+                            <input type="text" name="name" th:field="*{name}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="btn-close-modal-edit"
+                >
+                    Close
+                </button>
+                <input type="submit" class="btn btn-primary" value="Edit">
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--modal delete confirm-->
+<div id="delete-confirm-modal" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-body text-dark">
+                <h5 class="text-center"> Do you really want to delete these category? </h5>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" id="btn-close-modal-delete">Cancel</button>
+                <button type="button" class="btn btn-danger"><a id="btn-delete" class="text-decoration-none text-light" th:href="@{/category}">Delete</a></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+<th:block th:if="${message != null}">
+    <div id="message" th:text="${message}"></div>
+    <script>
+        $("#message").hide();
+        alert($("#message").text());
+    </script>
+</th:block>
+
+<th:block th:if="${showModal == true}">
+    <script>
+        $('#btn-add-category').click(function () {
+            $('#category-modal').modal('show');
+        })
+    </script>
+</th:block>
+
+<script>
+    $('#btn-add-category').click(function () {
+        $('#category-modal').modal('show');
+    })
+
+    $('#btn-close-modal').click(function () {
+        $('#category-modal').modal('hide');
+    })
+
+    $('#btn-close-modal-edit').click(function () {
+        $('#category-modal-edit').modal('hide');
+    })
+
+    $('#btn-close-modal-delete').click(function () {
+        $('#delete-confirm-modal').modal('hide');
+    })
+
+    function showEditModal(id, name, foodQuantity) {
+        $('#category-modal-edit').modal('show');
+        $('input[name=id]').val(id)
+        $('input[name=foodQuantity]').val(foodQuantity)
+        $('input[name=name]').val(name)
+    }
+
+    function showDeleteConfirmModal(id) {
+        $('#delete-confirm-modal').modal('show');
+        let href = /*[[@{/category/remove/}]]*/ '/category/remove/' + id +'';
+        $('#btn-delete').attr("href", href);
+    }
+</script>
+
+</body>
+</html>

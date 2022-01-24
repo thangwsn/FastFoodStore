@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="css">
+    <meta charset="UTF-8">
+    <title>Fast Food</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css}"
+          integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+</head>
+<body>
+<div th:fragment="header-customer">
+    <nav class="navbar navbar-expand-md fixed-top navbar-light bg-light">
+        <div class="container">
+            <div class="col-md-2">
+                <a class="navbar-brand" th:href="@{/}">Fast Food Store</a>
+            </div>
+            <div class="col-md-5">
+                <ul class="nav justify-content-start">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" th:href="@{/food}" >Foods</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" th:href="@{/order}">Orders</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" th:href="@{/cart}">
+                            <i class="fas fa-shopping-cart"></i> &nbsp;<span th:unless="${cartTotal == null}">[[${cartTotal}]]đ</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark"> <i class="fas fa-user"></i>
+                            <span th:unless="${session.user == null}" th:text="${session.user.fullName}"></span></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-1">
+                <a class="nav-link text-dark" th:href="@{/login}" th:if="${session.user == null}">
+                    <button class="btn btn-light btn-outline-primary" style="border-radius: 20px">Login</button>
+                </a>
+                <a class="nav-link text-dark" th:href="@{/processLogout}" th:unless="${session.user == null}">
+                    <button class="btn btn-light btn-outline-primary" style="border-radius: 20px" th:unless="${session.user == null}">Logout</button>
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>
+<div th:fragment="header-staff">
+    <nav class="navbar navbar-expand-md fixed-top navbar-light bg-light">
+        <div class="container">
+            <div class="col-md-7">
+                <a class="navbar-brand" th:href="@{/dashboard}">Fast Food Store</a>
+            </div>
+            <div class="col-md-2">
+                <script>
+                    var date = new Date();
+                    document.write(
+                        `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+                    );
+                </script>
+            </div>
+            <div class="col-md-2">Welcome! <span th:unless="${session.user == null}" th:text="${session.user.fullName}"></span></div>
+            <div class="col-md-1">
+                <a th:href="@{/processLogout}">
+                <button class="btn btn-light btn-outline-primary" style="border-radius: 20px">Logout</button>
+                </a></div>
+        </div>
+    </nav>
+</div>
+<div th:fragment="footer">
+    <!-- Footer -->
+    <footer class="text-center text-lg-start bg-light text-muted">
+        <!-- Section: Links  -->
+        <section>
+            <div class="container text-center text-md-start mt-5">
+                <!-- Grid row -->
+                <div class="row mt-3">
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                        <!-- Content -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            <i class="fas fa-gem me-3"></i>Fast Food
+                        </h6>
+                        <p>
+
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            Foods
+                        </h6>
+                        <p>
+                            <a href="#!" class="text-reset">Chicken</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">Burger</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">Bread</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">Beverage</a>
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+                    <!-- Grid column -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            Contact
+                        </h6>
+                        <p><i class="fas fa-home me-3"></i> Ha Dong, Ha Noi, Vietnam</p>
+                        <p>
+                            <i class="fas fa-envelope me-3"></i>
+                            nguyenduythangk6@gmail.com
+                        </p>
+                        <p><i class="fas fa-phone me-3"></i> + 84 656 667 343</p>
+                        <p><i class="fas fa-print me-3"></i> + 84 346 245 000</p>
+                    </div>
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
+            </div>
+        </section>
+        <!-- Section: Links  -->
+        <!-- Copyright -->
+        <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+            Copyright &copy;
+            <script>
+                document.write(new Date().getFullYear());
+            </script>
+            <a class="text-reset fw-bold" href="#">thangwsn</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
+</div>
+<div th:fragment="js">
+    <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"
+    ></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</div>
+</body>
+</html>

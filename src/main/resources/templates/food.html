@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
+<style>
+    div.owl-nav {
+        text-align: center;
+    }
+</style>
+<body>
+<div th:include="fragment/fragment :: header-customer"></div>
+
+<section class="section-margin--small mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-2 col-lg-2 col-md-2">
+                <div class="sidebar-categories">
+                    <div class="head">Browse Categories</div>
+                    <ul class="main-categories">
+                        <li class="common-filter">
+                            <div>
+                                <ul>
+                                    <li class="filter-list">
+                                        <input th:if='${categoryID.equals("0")}'
+                                               class="pixel-radio"
+                                               type="radio"
+                                               name="brand" checked
+                                        />
+                                        <input th:unless="${categoryID.equals('0')}"
+                                               class="pixel-radio"
+                                               type="radio"
+                                               name="brand"
+                                        />
+                                        <label><a class="text-decoration-none text-dark" th:href="@{/food(key=${key}, sortField=${sortField}, sortDirection=${reverseSortDirection})}">All</a></label>
+                                    </li>
+                                    <li class="filter-list" th:each="category : ${categoryList}">
+                                        <input th:if="${categoryID.equals(category.getID() + '')}"
+                                                class="pixel-radio"
+                                                type="radio"
+                                                name="brand" checked
+                                        />
+                                        <input th:unless="${categoryID.equals(category.getID() + '')}"
+                                               class="pixel-radio"
+                                               type="radio"
+                                               name="brand"
+                                        />
+                                        <label><a class="text-decoration-none text-dark" th:href="@{/food(categoryID=${category.ID}, key=${key}, sortField=${sortField}, sortDirection=${reverseSortDirection})}">[[${category.name}]] ([[${category.foodQuantity}]])</a></label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xl-10 col-lg-10 col-md-10">
+                <!-- Start Filter Bar -->
+                <div class="filter-bar d-flex flex-wrap align-items-center">
+                    <div class="col-md-2 col-xl-2 col-lg-2"></div>
+                    <div class="col-md-2 col-xl-2 col-lg-2">
+                        Price &nbsp;<a class="text-dark"
+                                 th:href="@{/food(categoryID=${categoryID}, key=${key}, sortField='price', sortDirection=${reverseSortDirection})}"><i
+                            class="fas fa-sort"></i></a> &nbsp; &nbsp; &nbsp;
+                        Sold &nbsp;<a class="text-dark"
+                                      th:href="@{/food(categoryID=${categoryID}, key=${key}, sortField='soldQuantity', sortDirection=${reverseSortDirection})}"><i
+                            class="fas fa-sort"></i></a>
+                    </div>
+                    <div class="col-md-4 col-xl-4 col-lg-4"></div>
+                    <div>
+                        <form th:action="@{/food}" method="get" class="input-group filter-bar-search col-md-3">
+                            <input type="text" placeholder="Search" name="key" th:value="${key}"/>
+                            <div class=" input-group-append">
+                                <button type="submit" class="form-control"><i class="fas fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- End Filter Bar -->
+                <!-- Start Best Seller -->
+                <section class="lattest-product-area pb-40 category-list">
+                    <div class="owl-carousel owl-theme">
+                        <div class="row" th:each="foodPage : ${foodPages}">
+                            <div class="col-md-3 col-lg-3 col-xl-3" th:each="food : ${foodPage}">
+                                <div class="card text-center card-product">
+                                    <div class="card-product__img" >
+                                        <a th:href="@{/food/{id}(id=${food.ID})}">
+                                            <img class="card-img" th:src="@{/image/{path}(path=${food.image})}" width="150px" height="150px"
+                                                 alt="Image" />
+                                        </a>
+                                        <ul class="card-product__imgOverlay">
+                                            <li>
+                                                <a th:href="@{/food/{id}(id=${food.ID})}">
+                                                    <button><i class="fas fa-info-circle"></i></button>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/cart/add(id=${food.ID}, quantity=1)}">
+                                                    <button><i class="fas fa-cart-plus"></i></button>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <button><i class="far fa-heart"></i></button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-product__title">
+                                            <a class="text-decoration-none" th:href="@{/food/{id}(id=${food.ID})}"><span
+                                                    th:text="${food.name}"></span></a>
+                                        </h5>
+                                        <span class="card-product__price" th:text="${food.price}"></span>
+                                        <p>Sold <span th:text="${food.soldQuantity}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- End Best Seller -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+<script th:src="@{/js/owl.carousel.js}"></script>
+<script th:src="@{/js/owl.carousel.min.js}"></script>
+
+<script>
+    $('.owl-carousel').owlCarousel({
+        loop: true,
+        nav: true,
+        margin: 10,
+        smartSpeed: 1000,
+        navText: ["<i class='fas fa-angle-left'></i> &nbsp; &nbsp;", "<i class='fas fa-angle-right'></i>"],
+        items: 1
+    })
+</script>
+</body>
+</html>

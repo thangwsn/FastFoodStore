@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<body>
+<div th:include="fragment/fragment :: header-customer"></div>
+
+<div class="container pt-4" style="margin-top: 100px">
+    <p class="text-center billing-alert">#<span th:text="${order.ID}"></span></p>
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div>
+                <h4>Order Info</h4>
+                <table>
+                    <tr>
+                        <td>Order ID</td>
+                        <td>: <span th:text="${order.ID}"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Order Time</td>
+                        <td>: <span th:text="${order.createTime}"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Payment</td>
+                        <td>: <span th:text="${order.payment.method}"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Payment Status</td>
+                        <td>: <span th:if="${order.getPayment.getStatus.equals('Unpaid')}"
+                                    th:text="${order.getPayment().getStatus()}" class="text-light bg-danger"></span>
+                            <span th:if="${order.getPayment().getStatus().equals('Paid')}"
+                                  th:text="${order.getPayment().getStatus()}" class="text-light bg-success"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td>: <span th:if="${order.getOrderStatusCustomer().name().equals('Pending')}"
+                                    th:text="${order.getOrderStatusCustomer}" class="text-light bg-danger"></span>
+                            <span th:if="${order.getOrderStatusCustomer().name().equals('Completed')}"
+                                  th:text="${order.getOrderStatusCustomer}" class="text-light bg-success"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div>
+                <h4>Billing Address</h4>
+                <table>
+                    <tr>
+                        <td>Full Name</td>
+                        <td>: <span th:text="${order.shipment.fullName}"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Mobile</td>
+                        <td>: <span th:text="${order.shipment.mobile}"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>: <span th:text="${order.shipment.address}"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Shipment</td>
+                        <td>: <span th:text="${order.shipment.shipmentType}"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h4>Order Details</h4>
+        <div class="table-responsive">
+            <table class="table">
+                <tbody>
+                <tr th:each="orderLine : ${order.orderLineList}">
+                    <td>
+                        <a class="text-decoration-none text-dark" th:href="@{/food/{id}(id=${orderLine.food.ID})}">
+                            [[${orderLine.food.name}]]
+                        </a>
+                    </td>
+                    <td>
+                        <h6>x<span th:text="${orderLine.quantity}"></span></h6>
+                    </td>
+                    <td>
+                        <p th:text="${orderLine.quantity * orderLine.price}"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Subtotal</h4>
+                    </td>
+                    <td></td>
+                    <td>
+                        <p th:text="${order.total}"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Shipment Fee</h4>
+                    </td>
+                    <td></td>
+                    <td>
+                        <p th:text="${order.payment.amount - order.total}"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Total</h4>
+                    </td>
+                    <td></td>
+                    <td>
+                        <h4 th:text="${order.payment.amount}"></h4>
+                    </td>
+                </tr>
+                <th:block th:if="${order.getOrderStatusCustomer().name().toString() == 'Pending'}">
+                    <tr >
+                        <td colspan="3" class="align-items-center">
+                            <a class="button button-register text-decoration-none" th:attr="onclick=|showUpdateOrderStatusModal('${order.ID}')|">Order Received</a>
+                        </td>
+                        <td></td>
+                        <td>
+                            <a class="button button-register text-decoration-none" th:href="@{/order}"> Go To Orders</a>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div
+        class="modal fade"
+        id="order-status-modal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <form class="modal-content" method="post" th:action="@{/order/update}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">
+                    Order Confirm
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group" >
+                            <input type="hidden" name="orderID">
+                            <input type="hidden" name="status">
+                            <label>Did you receive the dish?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="btn-close-modal"
+                >
+                    Close
+                </button>
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+<script>
+    function showUpdateOrderStatusModal(orderID) {
+        $("#order-status-modal").modal('show');
+        $("input[name=orderID]").val(orderID);
+        $("input[name=status]").val('Completed');
+    }
+    $('#btn-close-modal').click(function () {
+        $('#order-status-modal').modal('hide');
+    })
+</script>
+</body>
+</html>

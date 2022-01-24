@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<body>
+<div th:include="fragment/fragment :: header-customer"></div>
+<!--================ Hero banner start =================-->
+
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <form class="table-responsive" id="cart-form" method="POST" th:action="@{/cart/update}" th:object="${cart}">
+                <input type="hidden" th:field="*{ID}">
+                <input type="hidden" th:field="*{customer.ID}">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th scope="col">Food</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col"></th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cartLine, iter : ${cart.cartLineList}">
+                        <input type="hidden" th:field="*{cartLineList[__${iter.index}__].ID}">
+                        <input type="hidden" th:field="*{cartLineList[__${iter.index}__].cart.ID}">
+                        <input type="hidden" th:field="*{cartLineList[__${iter.index}__].food.ID}">
+                        <input type="hidden" th:field="*{cartLineList[__${iter.index}__].price}">
+                        <td><input type="checkbox" name="checkoutLine" th:value="${cartLine.ID}"></td>
+                        <td>
+                            <div>
+                                <div class="d-flex">
+                                    <img th:src="@{/image/{path}(path=${cartLine.food.image})}"
+                                         style="width: 20%; height: 20%"/>
+                                </div>
+                                <div class="media-body">
+                                    <p th:text="${cartLine.food.name}"></p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="buy-price">
+                            <h5 id="price" th:text="${cartLine.price}"></h5>
+                        </td>
+                        <td>
+                            <div class="product_count">
+                                <input
+                                        type="number"
+                                        th:field="*{cartLineList[__${iter.index}__].quantity}"
+                                        min="0"
+                                        th:value="${cartLine.quantity}"
+                                        name="quantity"
+                                        title="Quantity"
+                                />
+                            </div>
+                        </td>
+                        <td class="sub-total">
+                            <h5 th:text="${cartLine.quantity * cartLine.price}"></h5>
+                        </td>
+                        <td>
+                            <a th:href="@{/cart/remove/{id}(id=${cartLine.ID})}">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="bottom_button">
+                        <td colspan="2">
+                            <button type="submit" class="gray_btn" id="btn-update">Update Cart</button>
+                        </td>
+                        <td></td>
+                        <td><h5>Subtotal</h5></td>
+                        <td>
+                            <h5 id="sub-total">0</h5>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="out_button_area">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td colspan="2">
+                            <div class="checkout_btn_inner d-flex align-items-center">
+                                <a class="button button--active text-decoration-none" th:href="@{/}">Continue
+                                    Shopping</a> &nbsp;&nbsp;&nbsp;
+                                <button type="submit" id="btn-checkout" class="button button--active">Proceed to
+                                    checkout
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</section>
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+
+<script th:inline="javascript">
+    var cart = $('#cart-form');
+    $('#btn-update').click(function () {
+        let action = /*[[@{/cart/update}]]*/ '/cart/update';
+        cart.attr("action", action);
+    })
+
+    $('#btn-checkout').click(function () {
+        let action = /*[[@{/order/checkout}]]*/ '/order/checkout';
+        cart.attr("action", action);
+
+    })
+
+    // dom update cart
+    var subTotal = 0;
+    $('input[name=checkoutLine]').click(function () {
+        subTotal = 0;
+        $("input[name=checkoutLine]:checked").each(function () {
+            let quantity = $(this).parent().parent().find($('td > div.product_count > input')).val()
+            let price = parseFloat($(this).parent().parent().find($('td > h5#price')).text());
+            subTotal += parseInt(quantity) * price;
+        })
+        $("h5#sub-total").text(subTotal);
+    })
+
+    $('input[type=number]').change(function () {
+        subTotal = 0
+        $("input[name=checkoutLine]:checked").each(function () {
+            let quantity = $(this).parent().parent().find($('td > div.product_count > input')).val()
+            let price = parseFloat($(this).parent().parent().find($('td > h5#price')).text());
+            subTotal += parseInt(quantity) * price;
+        })
+        $("h5#sub-total").text(subTotal);
+    })
+
+</script>
+</body>
+</html>

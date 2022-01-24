@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<body>
+<div th:include="fragment/fragment :: header-customer"></div>
+<!--================ Hero banner start =================-->
+<section class="hero-banner">
+    <div class="container">
+        <div class="row no-gutters align-items-center pt-60px">
+            <div class="col-5 d-none d-sm-block">
+                <div class="hero-banner__img">
+                    <img class="img-fluid"
+                         src="https://media.timeout.com/images/105839300/image.jpg" alt=""/>
+                </div>
+            </div>
+            <div class="col-sm-7 col-lg-6 offset-lg-1 pl-4 pl-md-5 pl-lg-0">
+                <div class="hero-banner__content">
+                    <h4>Join a meal</h4>
+                    <h1>Be interested</h1>
+                    <p>
+                        Us which over of signs divide dominion deep fill bring they're
+                        meat beho upon own earth without morning over third. Their
+                        male dry. They are great appear whose land fly grass.
+                    </p>
+                    <a class="button button-hero" th:href="@{/food}">Browse Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================ Hero banner start =================-->
+
+<!-- ================ trending product section start ================= -->
+<section class="section-margin calc-60px">
+    <div class="container">
+        <div class="section-intro pb-60px">
+            <p>Popular</p>
+            <h2>Trending <span class="section-intro__style">Combo</span></h2>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-lg-3 col-xl-3" th:each="comboFood : ${comboFoodList}">
+                <div class="card text-center card-product">
+                    <div class="card-product__img">
+                        <a th:href="@{/food/{id}(id=${comboFood.ID})}">
+                            <img class="card-img" th:src="@{image/{path}(path=${comboFood.image})}" alt="Food" width="150px" height="150px"/>
+                        </a>
+                        <ul class="card-product__imgOverlay">
+                            <li>
+                                <a th:href="@{/food/{id}(id=${comboFood.ID})}">
+                                    <button><i class="fas fa-info-circle"></i></button>
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="@{/cart/add(id=${comboFood.ID}, quantity=1)}">
+                                    <button><i class="fas fa-cart-plus"></i></button>
+                                </a>
+                            </li>
+                            <li>
+                                <button><i class="far fa-heart"></i></button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-product__title">
+                            <a class="text-decoration-none" th:href="@{/food/{id}(id=${comboFood.ID})}"><span th:text="${comboFood.name}"></span></a>
+                        </h4>
+                        <span class="card-product__price" th:text="${comboFood.price}"></span>
+                        <p>Sold <span th:text="${comboFood.soldQuantity}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================ trending product section end ================= -->
+
+<section class="section-margin calc-60px">
+    <div class="container">
+        <div class="section-intro pb-60px">
+            <p>Popular</p>
+            <h2>Trending <span class="section-intro__style">Food</span></h2>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-lg-3 col-xl-3" th:each="singleFood : ${singleFoodList}">
+                <div class="card text-center card-product">
+                    <div class="card-product__img">
+                        <a th:href="@{/food/{id}(id=${singleFood.ID})}">
+                            <img class="card-img" th:src="@{/image/{path}(path=${singleFood.image})}" alt="Image" width="150px" height="150px"/>
+                        </a>
+                        <ul class="card-product__imgOverlay">
+                            <li>
+                                <a th:href="@{/food/{id}(id=${singleFood.ID})}">
+                                    <button><i class="fas fa-info-circle"></i></button>
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="@{/cart/add(id=${singleFood.ID}, quantity=1)}">
+                                    <button><i class="fas fa-cart-plus"></i></button>
+                                </a>
+                            </li>
+                            <li>
+                                <button><i class="far fa-heart"></i></button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-product__title">
+                            <a class="text-decoration-none" th:href="@{/food/{id}(id=${singleFood.ID})}"><span th:text="${singleFood.name}"></span></a>
+                        </h4>
+                        <span class="card-product__price"><span th:text="${singleFood.price}"></span></span>
+                        <p>Sold <span th:text="${singleFood.soldQuantity}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================ Best Selling item  carousel end ================= -->
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+</body>
+</html>

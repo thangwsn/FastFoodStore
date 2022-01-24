@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<body>
+<div th:include="fragment/fragment :: header-staff"></div>
+
+<div class="container" style="margin-top: 40px; margin-bottom: 200px">
+    <div class="row">
+        <div class="col-md-2 position-sticky" style="margin-top: 40px">
+            <nav
+                    id="sidebarMenu"
+                    class="collapse d-lg-block sidebar collapse bg-white"
+            >
+                <div class="position-sticky">
+                    <div class="list-group list-group-flush">
+                        <a
+                                th:href="@{/dashboard}"
+                                class="list-group-item list-group-item-action py-2 ripple"
+                        >
+                            <i class="fas fa-chart-bar"></i>&nbsp;&nbsp;<span>Dashboard</span>
+                        </a>
+                        <a
+                                th:href="@{/dashboard/customer}"
+                                class="list-group-item list-group-item-action py-2 ripple active"
+                        >
+                            <i class="far fa-user"></i>&nbsp;&nbsp;<span>Customer</span>
+                        </a>
+                        <a
+                                th:href="@{/dashboard/food}"
+                                class="list-group-item list-group-item-action py-2 ripple"
+                        ><i class="fas fa-utensils"></i>&nbsp;&nbsp;<span>Food</span></a
+                        >
+                        <a
+                                th:href="@{/dashboard/order}"
+                                class="list-group-item list-group-item-action py-2 ripple"
+                        ><i class="fas fa-book"></i>&nbsp;&nbsp;<span>Order</span></a
+                        >
+                        <a
+                                th:href="@{/category}"
+                                class="list-group-item list-group-item-action py-2 ripple"
+                        ><i class="fas fa-columns"></i>&nbsp;&nbsp;<span>Category</span></a
+                        >
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="col-md-10">
+            <main>
+                <div class="container pt-4">
+                    <section class="mb-4">
+                        <div class="card">
+                            <div class="card-header text-center py-3">
+                                <h5 class="mb-0 text-center">
+                                    <strong>Customers</strong>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover text-nowrap table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Full Name &nbsp; &nbsp;<a class="text-dark"
+                                                                                      th:href="@{'/dashboard/customer/page/' + ${currentPage} + '?sortField=fullName&sortDirection=' + ${reverseSortDirection}}"><i
+                                                    class="fas fa-sort"></i></a></th>
+                                            <th scope="col">Gender</th>
+                                            <th scope="col">Mobile</th>
+                                            <th scope="col">Address</th>
+                                            <th scope="col">Level</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="customer : ${customerList}">
+                                            <td><a class="text-decoration-none text-dark" th:href="@{/customer/{id}(id=${customer.ID})}">[[${customer.email}]]</a></td>
+                                            <td th:text="${customer.fullName}"></td>
+                                            <td th:text="${customer.gender}"></td>
+                                            <td th:text="${customer.mobile}"></td>
+                                            <td th:text="${customer.address}"></td>
+                                            <td th:text="${customer.level}"></td>
+                                            <td>
+                                                <a class="text-decoration-none text-dark" th:attr="onclick=|editLevelModal('${customer.ID}', '${customer.level}')|">
+                                                    <i class="far fa-edit"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <nav aria-label="..." th:if="${totalPages > 1}">
+                                    <ul class="pagination">
+                                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}">
+                                            <a th:if="${currentPage == i}" class="page-link bg-primary text-light"
+                                               aria-current="page"
+                                               th:href="@{'/dashboard/customer/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDirection=' + ${sortDirection}}">[[${i}]]</a>
+                                            <a th:unless="${currentPage == i}" class="page-link"
+                                               th:href="@{'/dashboard/customer/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDirection=' + ${sortDirection}}">[[${i}]]</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<div
+        class="modal fade"
+        id="customer-level-modal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <form class="modal-content" method="post" th:action="@{/customer/edit}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">
+                    Change Member Level
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group" >
+                            <input type="hidden" name="customerID">
+                            <label>Level</label>
+                            <select name="level" class="form-control">
+                                <option value="Member" selected>Member</option>
+                                <option value="Silver">Silver</option>
+                                <option value="Gold">Gold</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="btn-close-modal"
+                >
+                    Close
+                </button>
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+<script>
+    $('#btn-close-modal').click(function () {
+        $('#customer-level-modal').modal('hide');
+    })
+    function editLevelModal(customerID, level) {
+        $('#customer-level-modal').modal('show');
+        $('input[name=customerID]').val(customerID);
+        $('input[name=level]').val(level);
+    }
+</script>
+</body>
+</html>

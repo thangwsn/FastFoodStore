@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<body>
+<div th:include="fragment/fragment :: header-customer"></div>
+
+<div class="container" style="margin-top: 40px; margin-bottom: 200px;">
+    <div class="row">
+        <div class="col-md-12">
+            <main>
+                <div class="container" style="margin-top: 40px">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <img class="img-fluid"
+                                 th:src="@{/image/{path}(path=${comboFood.image})}"
+                            />
+                        </div>
+                        <div class="col-md-5">
+                            <div>
+                                <h4>[[${comboFood.name}]]</h4><br>
+                                <h3>[[${comboFood.price}]]</h3><br>
+                                <ul class="list">
+                                    <li>
+                                        <p><span>Description: </span> [[${comboFood.description}]]</p>
+                                    </li>
+                                    <li>
+                                        <h6><span>Sold:</span>[[${comboFood.soldQuantity}]]</h6>
+                                    </li>
+                                </ul>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-4 col-lg-4 col-xl-4" th:each="comboLine : ${comboFood.comboLineList}">
+                                        <div class="card text-center card-product">
+                                            <div class="card-product__img">
+                                                <a href="">
+                                                    <img class="card-img" th:src="@{/image/{path}(path=${comboLine.singleFood.image})}" alt="Image"/>
+                                                </a>
+                                                <ul class="card-product__imgOverlay">
+                                                    <li>
+                                                        <a th:href="@{/food/{id}(id=${comboLine.singleFood.ID})}">
+                                                            <button><i class="fas fa-info-circle"></i></button>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="card-product__title">
+                                                    <a class="text-decoration-none" th:href="@{/food/{id}(id=${comboLine.singleFood.ID})}"><span th:text="${comboLine.singleFood.name}"></span></a>
+                                                </span>
+                                                <h6 class="card-product__price" th:text="${comboLine.singleFood.price}"></h6>
+                                                <span>x[[${comboLine.quantity}]]</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <form method="get" th:action="@{/cart/add}">
+                                    <input type="hidden" name="id" th:value="${comboFood.ID}">
+                                    &nbsp; &nbsp;<input type="number" name="quantity" value="1" class="text-center w-25 form-control-color bg-light border-0"><br><br>
+                                    <button type="submit" class="border-0 bg-white" style="border-radius: 20px">
+                                        <a class="button button--active text-decoration-none">Add To Cart</a>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+<lock th:if="${message != null}">
+    <div id="message" th:text="${message}"></div>
+    <script>
+        $("#message").hide();
+        alert($("#message").text());
+    </script>
+    </th:block>
+
+</body>
+</html>

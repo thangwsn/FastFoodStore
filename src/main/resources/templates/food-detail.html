@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<body>
+<div th:include="fragment/fragment :: header-customer"></div>
+
+<div class="container" style="margin-top: 40px; margin-bottom: 200px;">
+    <div class="row">
+        <div class="col-md-12">
+            <main>
+                <div class="container" style="margin-top: 40px">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <img class="img-fluid"
+                                 th:src="@{/image/{path}(path=${singleFood.image})}"
+                            />
+                        </div>
+                        <div class="col-md-5">
+                            <div>
+                                <h4>[[${singleFood.name}]]</h4><br>
+                                <h3>[[${singleFood.price}]]</h3><br>
+                                <ul class="list">
+                                    <li>
+                                        <p
+                                        ><span>Category:</span> [[${singleFood.category.name}]]</p
+                                        >
+                                    </li>
+                                    <li>
+                                        <p><span>Description: </span> [[${singleFood.description}]]</p>
+                                    </li>
+                                    <li>
+                                        <p><span>Calories: </span> [[${singleFood.calories}]]</p>
+                                    </li>
+                                    <li>
+                                        <h6><span>Sold: </span> [[${singleFood.soldQuantity}]]</h6>
+                                    </li>
+                                </ul>
+                                <br>
+                                <form method="get" th:action="@{/cart/add}">
+                                    <input type="hidden" name="id" th:value="${singleFood.ID}">
+                                    &nbsp; &nbsp;<input type="number" name="quantity" value="1" class="text-center w-25 form-control-color bg-light border-0"><br><br>
+                                    <button type="submit" class="border-0 bg-white" style="border-radius: 20px">
+                                        <a class="button button--active text-decoration-none">Add To Cart</a>
+                                        </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+<lock th:if="${message != null}">
+    <div id="message" th:text="${message}"></div>
+    <script>
+        $("#message").hide();
+        alert($("#message").text());
+    </script>
+    </th:block>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns=http://www.w3.org/1999/xhtml xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/fragment :: css"></head>
+<body>
+<div th:include="fragment/fragment :: header-customer"></div>
+<!--================ Hero banner start =================-->
+<div class="container pt-4" style="margin-top: 100px">
+    <form method="post" th:action="@{/order/placeorder}" th:object="${order}">
+        <input type="hidden" th:field="*{ID}">
+        <div>
+            <div class="row">
+                <div class="col-md-7">
+                    <h5>Billing Details</h5>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label>Full name</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    th:field="*{shipment.fullName}"
+                                    required
+                            />
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Mobile</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    th:field="*{shipment.mobile}"
+                                    required
+                                    minlength="10"
+                                    maxlength="10"
+                            />
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label>Address</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    th:field="*{shipment.address}"
+                                    required
+                            />
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Shipment Type</label>
+                            <select class="form-control" name="shipmentType" id="shipment-type"
+                                    th:field="*{shipment.shipmentType}">
+                                <option value="GHTK" fee="20000">GHTK</option>
+                                <option value="GHN" fee="25000">GHN</option>
+                                <option value="SPX" fee="30000">SPX</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12 form-group">
+                            <br>
+                            <textarea
+                                    class="form-control"
+                                    th:field="*{shipment.note}"
+                                    rows="2"
+                                    placeholder="Order Notes"
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div>
+                        <h5>Your Order</h5>
+                        <div>
+                            <table width="400px">
+                                <tr th:each="orderLine, iter : ${order.orderLineList}">
+                                    <input type="hidden" th:field="*{orderLineList[__${iter.index}__].ID}">
+                                    <input type="hidden" th:field="*{orderLineList[__${iter.index}__].order.ID}">
+                                    <input type="hidden" th:field="*{orderLineList[__${iter.index}__].food.ID}">
+                                    <input type="hidden" th:field="*{orderLineList[__${iter.index}__].quantity}">
+                                    <input type="hidden" th:field="*{orderLineList[__${iter.index}__].price}">
+                                    <td><a href="" class="text-decoration-none text-dark"
+                                           th:text="${orderLine.food.name}"></a></td>
+                                    <td>x<span class="middle" th:text="${orderLine.quantity}"></span></td>
+                                    <td><span class="last" th:text="${orderLine.quantity * orderLine.price}"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+                        <div>
+                            <table width="400px">
+                                <tr>
+                                    <td>
+                                        <h6>Sub total</h6>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <input type="hidden" th:field="*{total}">
+                                        <h6 id="sub-total" th:text="${order.total}"></h6>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h6>Shipping Fee</h6>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <h6 id="shipment-fee"></h6>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h6>Total</h6>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <h6 id="total-order"></h6>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+                        <div>
+                            <h5>Payment</h5>
+                            <div>
+                                <div class="radio_btn">
+                                    <input type="radio" id="f-option5" th:field="*{payment.method}" value="Check" th:checked/>
+                                    <label for="f-option5">Check Payment</label>
+                                </div>
+
+                            </div>
+                            <div class="payment_item active">
+                                <div class="radio_btn">
+                                    <input type="radio" id="f-option6" th:field="*{payment.method}" value="COD"/>
+                                    <label for="f-option6">Cash on Delivery</label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div>
+                            <button type="submit" class="button button--active">Place order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div th:include="fragment/fragment :: footer"></div>
+<div th:include="fragment/fragment :: js"></div>
+<script th:inline="javascript">
+    $('#f-option6').attr("checked", "checked");
+    //default
+    let fee = $('option[value=GHTK]').attr("fee");
+    $('#shipment-fee').text(fee)
+    let total = parseFloat(fee) + parseFloat($('#sub-total').text())
+    $('#total-order').text(total);
+
+    //catch even change
+    $('#shipment-type').change(function () {
+        let fee = $('option[value='+ $(this).val() +']').attr("fee");
+        $('#shipment-fee').text(fee)
+        let total = parseFloat(fee) + parseFloat($('#sub-total').text());
+        $('#total-order').text(total);
+
+    })
+
+</script>
+</body>
+</html>
